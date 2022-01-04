@@ -10,7 +10,7 @@ local LOCAL_ZSHRC=$HOME/.zshlocal/.zshrc       # Allow the local machine to have
    source $ZSH_CONF/functions.zsh              # Load misc functions. Done in a seperate file to keep this from getting too long and ugly
    source $ZSH_CONF/spectrum.zsh               # Make nice colors available
    source $ZSH_CONF/prompts.zsh                # Setup our PS1, PS2, etc.
-   source $ZSH_CONF/termsupport.zsh            # Set terminal window title and other terminal-specific things
+   #source $ZSH_CONF/termsupport.zsh            # Set terminal window title and other terminal-specific things
 
 # Set important shell variables
    export EDITOR=vim                           # Set default editor
@@ -21,11 +21,13 @@ local LOCAL_ZSHRC=$HOME/.zshlocal/.zshrc       # Allow the local machine to have
    export PASSWORD_STORE_DIR=".pass"           # Set the location of the encrypted password store for 'pass'
    export PASSWORD_STORE_CLIP_TIME=30          # Set how long a password clipped to the clipboard with 'pass' lasts
    export LESSHISTFILE="/dev/null"                    # Prevent the less hist file from being made, I don't want it
-   
+   export PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+   export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
 # Misc
    setopt ZLE                                  # Enable the ZLE line editor, which is default behavior, but to be sure
    declare -U path                             # prevent duplicate entries in path
-   eval $(dircolors $ZSH_CONF/dircolors)       # Uses custom colors for LS, as outlined in dircolors
+   #eval $(dircolors $ZSH_CONF/dircolors)       # Uses custom colors for LS, as outlined in dircolors
    umask 002                                   # Default permissions for new files, subract from 777 to understand
    setopt NO_BEEP                              # Disable beeps
    setopt AUTO_CD                              # Sends cd commands without the need for 'cd'
@@ -82,100 +84,13 @@ local LOCAL_ZSHRC=$HOME/.zshlocal/.zshrc       # Allow the local machine to have
    setopt NUMERIC_GLOB_SORT                    # Sort globs that expand to numbers numerically, not by letter (i.e. 01 2 03)
    
 # Aliases
-   git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit" 
-
-   alias vi="vim"
-
-   alias -g ...='../..'
-   alias -g ....='../../..'
-   alias -g .....='../../../..'
-   alias -g ......='../../../../..'
-   alias -g .......='../../../../../..'
-   alias -g ........='../../../../../../..'
-   
-   alias ls="ls -h --color='auto'"
-   alias lsa='ls -A'
-   alias ll='ls -l'
-   alias la='ls -lA'
-   alias lx='ls -lXB'    #Sort by extension
-   alias lt='ls -ltr'
-   alias lk='ls -lSr'
-   alias cdl=changeDirectory; function changeDirectory { cd $1 ; la }
-
-   alias md='mkdir -p'
-   alias rd='rmdir'
-
-   # Search running processes. Usage: psg <process_name>
-   alias psg="ps aux $( [[ -n "$(uname -a | grep CYGWIN )" ]] && echo '-W') | grep -i $1"
-
-   # Copy with a progress bar
-   alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --" 
-
-   alias d='dirs -v | head -10'                      # List the last ten directories we've been to this session, no duplicates
-
-   alias google='web_search google'                  # Note: websearch function is loaded in function file, see above
-   alias ddg='web_search ddg'
-   alias github='web_search github'
-   alias wiki='web_search ddg \!w'
-   alias news='web_search ddg \!n'
-   alias youtube='web_search ddg \!yt'
-   alias map='web_search ddg \!m'
-   alias image='web_search ddg \!i'
-
-# Key Bindings
-   bindkey "^K" kill-whole-line                      # [Ctrl-K] erase whole line
-   bindkey '^[[1;5C' forward-word                    # [Ctrl-RightArrow] - move forward one word
-   bindkey '^[[1;5D' backward-word                   # [Ctrl-LeftArrow] - move backward one word                    
-   bindkey '^?' backward-delete-char                 # [Backspace] - delete backward
-   bindkey "${terminfo[kdch1]}" delete-char          # [Delete] - delete forward
-   bindkey '\e[2~' overwrite-mode                    # [Insert] - toggles overwrite mode                  
-   bindkey "${terminfo[kpp]}" up-line-or-history     # [PageUp] - Up a line of history
-   bindkey "${terminfo[knp]}" down-line-or-history   # [PageDown] - Down a line of history
-   bindkey "^[[A" history-search-backward            # start typing + [Up-Arrow] - fuzzy find history forward  
-   bindkey "^[[B" history-search-forward             # start typing + [Down-Arrow] - fuzzy find history backward
-   bindkey '\e[H' beginning-of-line                  # Note: this works on cygwin/mintty, may not work on other systems 
-   bindkey '\e[F' end-of-line                        # Note: this works on cygwin/mintty, may not work on other systems
-   bindkey "\e\e" sudo-command-line                  # [Esc] [Esc] - insert "sudo" at beginning of line
-      zle -N sudo-command-line
-      sudo-command-line() {
-            [[ -z $BUFFER ]] && zle up-history
-            if [[ $BUFFER == sudo\ * ]]; then
-                  LBUFFER="${LBUFFER#sudo }"
-            else
-                  LBUFFER="sudo $LBUFFER"
-            fi
-      }
-      
-# Setup grep to be a bit more nice
-  # check if 'x' grep argument available
-   grep-flag-available() {
-         echo | grep $1 "" >/dev/null 2>&1
-   }
-
-   local GREP_OPTIONS=""
-
-   # color grep results
-   if grep-flag-available --color=auto; then
-         GREP_OPTIONS+=" --color=auto"
-   fi
-
-   # ignore VCS folders (if the necessary grep flags are available)
-   local VCS_FOLDERS="{.bzr,CVS,.git,.hg,.svn}"
-
-   if grep-flag-available --exclude-dir=.cvs; then
-         GREP_OPTIONS+=" --exclude-dir=$VCS_FOLDERS"
-   elif grep-flag-available --exclude=.cvs; then
-         GREP_OPTIONS+=" --exclude=$VCS_FOLDERS"
-   fi
-
-   # export grep settings
-   alias grep="grep $GREP_OPTIONS"
-
-   # clean up
-   unfunction grep-flag-available
+   alias ll="exa -lah"
 
 # Allow local zsh settings (superseding anything in here) in case I want something specific for certain machines
   if [[ -r $LOCAL_ZSHRC ]]; then
     source $LOCAL_ZSHRC
   fi
 
+# Key bind
+   bindkey '^[[1;3C' forward-word
+   bindkey '^[[1;3D' backward-word
