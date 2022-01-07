@@ -148,10 +148,10 @@ set noswapfile
 
 " Use spaces instead of tabs and set tabwidth
 set expandtab
-set softtabstop=3              
-set shiftwidth=3
+set softtabstop=4              
+set shiftwidth=4
 set smarttab
-set tabstop=3
+set tabstop=4
 
 " Break lines visually (without inserting a newlinew character) if they're too long
 " set linebreak
