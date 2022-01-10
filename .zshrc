@@ -94,3 +94,4 @@ local LOCAL_ZSHRC=$HOME/.zshlocal/.zshrc       # Allow the local machine to have
 # Key bind
    bindkey '^[[1;3C' forward-word
    bindkey '^[[1;3D' backward-word
+   bindkey '^R' history-incremental-search-backward   
